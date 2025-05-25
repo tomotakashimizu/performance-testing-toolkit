@@ -1,0 +1,16 @@
+GET https://api.example.com/v1/users
+
+POST https://api.example.com/v1/users
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN_HERE
+@body1.json
+
+GET https://api.example.com/v1/users/123
+
+PUT https://api.example.com/v1/users/123
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN_HERE
+@body2.json
+
+DELETE https://api.example.com/v1/users/123
+Authorization: Bearer YOUR_TOKEN_HERE
