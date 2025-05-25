@@ -2,16 +2,14 @@ GET http://localhost:8080/
 
 GET http://localhost:8080/health
 
-GET http://localhost:8080/api/users
+GET http://localhost:8080/api/v1/items
 
-GET http://localhost:8080/api/products
+GET http://localhost:8080/api/v1/items/1
 
-GET http://localhost:8080/api/orders
+GET http://localhost:8080/api/v1/items/2
 
-GET http://localhost:8080/api/slow?delay=1.0
+GET http://localhost:8080/api/v1/slow
 
-GET http://localhost:8080/api/cpu?iterations=100000
+GET http://localhost:8080/api/v1/random-delay
 
-GET http://localhost:8080/api/memory?size=1000
-
-GET http://localhost:8080/api/stats 
+GET http://localhost:8080/api/v1/cpu-intensive 

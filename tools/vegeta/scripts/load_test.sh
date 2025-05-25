@@ -6,7 +6,7 @@
 set -e
 
 # デフォルト設定
-DEFAULT_CONFIG="../config/local_test_config.json"
+DEFAULT_CONFIG="../config/local_test_config.txt"
 DEFAULT_RATE="50"
 DEFAULT_DURATION="1m"
 DEFAULT_TIMEOUT="30s"
@@ -43,16 +43,16 @@ Vegeta Load Testing Script
     $0
 
     # カスタム設定で実行
-    $0 -c ../config/sample_config.json -r 100 -d 2m
+    $0 -c ../config/sample_config.txt -r 100 -d 2m
 
     # 高負荷試験
     $0 -r 500 -d 5m -t 10s -n "high_load_test"
 
     # 外部API試験
-    $0 -c ../config/production_config.json -r 10 -d 30s
+    $0 -c ../config/production_config.txt -r 10 -d 30s
 
 設定ファイル形式:
-    JSON形式でVegetaのターゲット配列を定義
+    HTTP形式（txt形式）でVegetaのターゲットを定義
     詳細は ../config/README.md を参照
 
 出力ファイル:
@@ -131,7 +131,7 @@ fi
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "エラー: 設定ファイルが見つかりません: $CONFIG_FILE"
     echo "利用可能な設定ファイル:"
-    find ../config -name "*.json" -type f 2>/dev/null || echo "  設定ファイルが見つかりません"
+    find ../config -name "*.txt" -type f 2>/dev/null || echo "  設定ファイルが見つかりません"
     exit 1
 fi
 
@@ -178,7 +178,7 @@ if vegeta attack \
     -rate="$RATE" \
     -duration="$DURATION" \
     -timeout="$TIMEOUT" \
-    -format=json \
+    -format=http \
     >"$RESULTS_FILE"; then
 
     echo "負荷試験が完了しました: $RESULTS_FILE"
