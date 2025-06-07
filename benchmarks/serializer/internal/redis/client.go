@@ -53,12 +53,12 @@ func (c *Client) Close() error {
 }
 
 // BenchmarkRedisOperations benchmarks Redis SET/GET operations for all serializers
-func (c *Client) BenchmarkRedisOperations(serializers []serializers.Serializer, user models.User, iterations int) ([]RedisResult, error) {
+func (c *Client) BenchmarkRedisOperations(serializers []serializers.Serializer, users []models.User, iterations int) ([]RedisResult, error) {
 	results := make([]RedisResult, 0, len(serializers))
 
 	for _, ser := range serializers {
 		fmt.Printf("Running Redis benchmark for %s...\n", ser.Name())
-		result, err := c.benchmarkSerializer(ser, user, iterations)
+		result, err := c.benchmarkSerializer(ser, users, iterations)
 		if err != nil {
 			return nil, fmt.Errorf("error benchmarking %s with Redis: %w", ser.Name(), err)
 		}
@@ -69,20 +69,20 @@ func (c *Client) BenchmarkRedisOperations(serializers []serializers.Serializer, 
 }
 
 // benchmarkSerializer benchmarks Redis operations for a single serializer
-func (c *Client) benchmarkSerializer(ser serializers.Serializer, user models.User, iterations int) (RedisResult, error) {
+func (c *Client) benchmarkSerializer(ser serializers.Serializer, users []models.User, iterations int) (RedisResult, error) {
 	result := RedisResult{
 		SerializerName: ser.Name(),
 		SetTimes:       make([]int64, iterations),
 		GetTimes:       make([]int64, iterations),
 	}
 
-	// Serialize the user data once
-	data, err := ser.Marshal(user)
+	// Serialize the users slice once
+	data, err := ser.MarshalUsers(users)
 	if err != nil {
-		return result, fmt.Errorf("failed to marshal user: %w", err)
+		return result, fmt.Errorf("failed to marshal users: %w", err)
 	}
 
-	keyPrefix := fmt.Sprintf("benchmark:%s:user", ser.Name())
+	keyPrefix := fmt.Sprintf("benchmark:%s:users", ser.Name())
 
 	// Run iterations
 	for i := 0; i < iterations; i++ {
@@ -107,9 +107,9 @@ func (c *Client) benchmarkSerializer(ser serializers.Serializer, user models.Use
 		result.GetTimes[i] = getTime
 
 		// Verify data integrity
-		_, err = ser.Unmarshal(retrievedData)
+		_, err = ser.UnmarshalUsers(retrievedData)
 		if err != nil {
-			return result, fmt.Errorf("failed to unmarshal retrieved data: %w", err)
+			return result, fmt.Errorf("failed to unmarshal retrieved users data: %w", err)
 		}
 
 		// Clean up the key

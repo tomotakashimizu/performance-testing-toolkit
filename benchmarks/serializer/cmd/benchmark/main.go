@@ -101,9 +101,7 @@ func main() {
 				log.Printf("Warning: Failed to cleanup Redis test keys: %v", err)
 			}
 
-			// Use first user for Redis benchmarks
-			testUser := users[0]
-
+			// Use all users for Redis benchmarks
 			// Create serializers for Redis test
 			redisSerializers := []serializers.Serializer{
 				serializers.NewJSONSerializer(),
@@ -112,7 +110,7 @@ func main() {
 				serializers.NewGobSerializer(),
 			}
 
-			redisResults, err := redisClient.BenchmarkRedisOperations(redisSerializers, testUser, *iterations)
+			redisResults, err := redisClient.BenchmarkRedisOperations(redisSerializers, users, *iterations)
 			if err != nil {
 				log.Printf("Redis benchmark failed: %v", err)
 			} else {
