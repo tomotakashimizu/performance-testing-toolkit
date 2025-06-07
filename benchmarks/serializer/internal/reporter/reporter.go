@@ -52,14 +52,15 @@ func (r *Reporter) PrintSerializationResults(results []serializers.Serialization
 
 // PrintSymmetryResults prints symmetry test results to console
 func (r *Reporter) PrintSymmetryResults(results []serializers.SymmetryResult) {
-	fmt.Println("\n" + strings.Repeat("=", 100))
+	fmt.Println("\n" + strings.Repeat("=", 160))
 	fmt.Println("SYMMETRY TEST RESULTS")
-	fmt.Println(strings.Repeat("=", 100))
+	fmt.Println(strings.Repeat("=", 160))
 
-	// Header
+	// Functional equivalence header
+	fmt.Println("FUNCTIONAL EQUIVALENCE (Length-based comparison)")
 	fmt.Printf("%-12s | %-12s | %-12s | %-12s | %-12s\n",
 		"Serializer", "Empty Slices", "Empty Maps", "Nil Slices", "Nil Maps")
-	fmt.Println(strings.Repeat("-", 100))
+	fmt.Println(strings.Repeat("-", 80))
 
 	for _, result := range results {
 		fmt.Printf("%-12s | %-12s | %-12s | %-12s | %-12s\n",
@@ -69,7 +70,22 @@ func (r *Reporter) PrintSymmetryResults(results []serializers.SymmetryResult) {
 			boolToString(result.NilSlicesOK),
 			boolToString(result.NilMapsOK))
 	}
-	fmt.Println(strings.Repeat("=", 100))
+
+	fmt.Println("\nSTRICT TYPE PRESERVATION (Exact type matching)")
+	fmt.Printf("%-12s | %-12s | %-12s | %-12s | %-12s\n",
+		"Serializer", "Empty→Empty", "Empty{}→{}", "Nil→Nil", "Nil→Nil")
+	fmt.Println(strings.Repeat("-", 80))
+
+	for _, result := range results {
+		fmt.Printf("%-12s | %-12s | %-12s | %-12s | %-12s\n",
+			result.SerializerName,
+			boolToString(result.StrictEmptySlicesOK),
+			boolToString(result.StrictEmptyMapsOK),
+			boolToString(result.StrictNilSlicesOK),
+			boolToString(result.StrictNilMapsOK))
+	}
+
+	fmt.Println(strings.Repeat("=", 160))
 
 	// Print details
 	fmt.Println("\nDetails:")
@@ -165,7 +181,8 @@ func (r *Reporter) SaveSymmetryResults(results []serializers.SymmetryResult) err
 
 	// Write header
 	header := []string{
-		"Serializer", "EmptySlicesOK", "EmptyMapsOK", "NilSlicesOK", "NilMapsOK", "Details",
+		"Serializer", "EmptySlicesOK", "EmptyMapsOK", "NilSlicesOK", "NilMapsOK",
+		"StrictEmptySlicesOK", "StrictEmptyMapsOK", "StrictNilSlicesOK", "StrictNilMapsOK", "Details",
 	}
 	if err := writer.Write(header); err != nil {
 		return fmt.Errorf("failed to write header: %w", err)
@@ -179,6 +196,10 @@ func (r *Reporter) SaveSymmetryResults(results []serializers.SymmetryResult) err
 			boolToString(result.EmptyMapsOK),
 			boolToString(result.NilSlicesOK),
 			boolToString(result.NilMapsOK),
+			boolToString(result.StrictEmptySlicesOK),
+			boolToString(result.StrictEmptyMapsOK),
+			boolToString(result.StrictNilSlicesOK),
+			boolToString(result.StrictNilMapsOK),
 			result.Details,
 		}
 		if err := writer.Write(record); err != nil {

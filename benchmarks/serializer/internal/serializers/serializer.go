@@ -23,10 +23,14 @@ type SerializationResult struct {
 
 // SymmetryResult contains the results of empty slice/map symmetry tests
 type SymmetryResult struct {
-	SerializerName string
-	EmptySlicesOK  bool
-	EmptyMapsOK    bool
-	NilSlicesOK    bool
-	NilMapsOK      bool
-	Details        string
+	SerializerName      string
+	EmptySlicesOK       bool // Functional equivalence (length = 0)
+	EmptyMapsOK         bool // Functional equivalence (length = 0)
+	NilSlicesOK         bool // Nil handling
+	NilMapsOK           bool // Nil handling
+	StrictEmptySlicesOK bool // Strict type preservation ([] stays [])
+	StrictEmptyMapsOK   bool // Strict type preservation ({} stays {})
+	StrictNilSlicesOK   bool // Strict nil preservation (nil stays nil)
+	StrictNilMapsOK     bool // Strict nil preservation (nil stays nil)
+	Details             string
 }
