@@ -169,34 +169,18 @@ func (r *Runner) testSymmetry(ser serializers.Serializer) serializers.SymmetryRe
 		if err != nil {
 			result.Details += fmt.Sprintf("Empty slice unmarshal error: %v; ", err)
 		} else {
-			// Functional equivalence test (length = 0)
-			tagsEqual := len(userWithEmptySlice.Tags) == 0 && len(restored.Tags) == 0
-			socialLinksEqual := len(userWithEmptySlice.Profile.SocialLinks) == 0 && len(restored.Profile.SocialLinks) == 0
-			result.EmptySlicesOK = tagsEqual && socialLinksEqual
-
 			// Strict symmetry test (exact type preservation)
 			tagsStrictEqual := reflect.DeepEqual(userWithEmptySlice.Tags, restored.Tags)
 			socialLinksStrictEqual := reflect.DeepEqual(userWithEmptySlice.Profile.SocialLinks, restored.Profile.SocialLinks)
 			result.StrictEmptySlicesOK = tagsStrictEqual && socialLinksStrictEqual
 
-			if !result.EmptySlicesOK {
-				if !tagsEqual {
-					result.Details += fmt.Sprintf("Empty slice length mismatch Tags: original len=%d, restored len=%d; ",
-						len(userWithEmptySlice.Tags), len(restored.Tags))
-				}
-				if !socialLinksEqual {
-					result.Details += fmt.Sprintf("Empty slice length mismatch SocialLinks: original len=%d, restored len=%d; ",
-						len(userWithEmptySlice.Profile.SocialLinks), len(restored.Profile.SocialLinks))
-				}
-			}
-
 			if !result.StrictEmptySlicesOK {
 				if !tagsStrictEqual {
-					result.Details += fmt.Sprintf("Strict empty slice type mismatch Tags: original=%#v, restored=%#v; ",
+					result.Details += fmt.Sprintf("Empty slice type mismatch Tags: original=%#v, restored=%#v; ",
 						userWithEmptySlice.Tags, restored.Tags)
 				}
 				if !socialLinksStrictEqual {
-					result.Details += fmt.Sprintf("Strict empty slice type mismatch SocialLinks: original=%#v, restored=%#v; ",
+					result.Details += fmt.Sprintf("Empty slice type mismatch SocialLinks: original=%#v, restored=%#v; ",
 						userWithEmptySlice.Profile.SocialLinks, restored.Profile.SocialLinks)
 				}
 			}
@@ -246,27 +230,18 @@ func (r *Runner) testSymmetry(ser serializers.Serializer) serializers.SymmetryRe
 		if err != nil {
 			result.Details += fmt.Sprintf("Nil slice unmarshal error: %v; ", err)
 		} else {
-			// Functional nil handling test (nil or zero length)
-			result.NilSlicesOK = (userWithNilSlice.Tags == nil && (restored.Tags == nil || len(restored.Tags) == 0)) &&
-				(userWithNilSlice.Profile.SocialLinks == nil && (restored.Profile.SocialLinks == nil || len(restored.Profile.SocialLinks) == 0))
-
 			// Strict nil preservation test (nil stays nil)
 			tagsStrictNil := userWithNilSlice.Tags == nil && restored.Tags == nil
 			socialLinksStrictNil := userWithNilSlice.Profile.SocialLinks == nil && restored.Profile.SocialLinks == nil
 			result.StrictNilSlicesOK = tagsStrictNil && socialLinksStrictNil
 
-			if !result.NilSlicesOK {
-				result.Details += fmt.Sprintf("Nil slice handling: original=nil, restored=%v; ",
-					restored.Tags)
-			}
-
 			if !result.StrictNilSlicesOK {
 				if !tagsStrictNil {
-					result.Details += fmt.Sprintf("Strict nil slice preservation Tags: original=nil, restored=%#v; ",
+					result.Details += fmt.Sprintf("Nil slice preservation Tags: original=nil, restored=%#v; ",
 						restored.Tags)
 				}
 				if !socialLinksStrictNil {
-					result.Details += fmt.Sprintf("Strict nil slice preservation SocialLinks: original=nil, restored=%#v; ",
+					result.Details += fmt.Sprintf("Nil slice preservation SocialLinks: original=nil, restored=%#v; ",
 						restored.Profile.SocialLinks)
 				}
 			}
@@ -294,34 +269,18 @@ func (r *Runner) testSymmetry(ser serializers.Serializer) serializers.SymmetryRe
 		if err != nil {
 			result.Details += fmt.Sprintf("Empty map unmarshal error: %v; ", err)
 		} else {
-			// Functional equivalence test (length = 0)
-			metadataEqual := len(userWithEmptyMap.Metadata) == 0 && len(restored.Metadata) == 0
-			notificationsEqual := len(userWithEmptyMap.Profile.Preferences.Notifications) == 0 && len(restored.Profile.Preferences.Notifications) == 0
-			result.EmptyMapsOK = metadataEqual && notificationsEqual
-
 			// Strict symmetry test (exact type preservation)
 			metadataStrictEqual := reflect.DeepEqual(userWithEmptyMap.Metadata, restored.Metadata)
 			notificationsStrictEqual := reflect.DeepEqual(userWithEmptyMap.Profile.Preferences.Notifications, restored.Profile.Preferences.Notifications)
 			result.StrictEmptyMapsOK = metadataStrictEqual && notificationsStrictEqual
 
-			if !result.EmptyMapsOK {
-				if !metadataEqual {
-					result.Details += fmt.Sprintf("Empty map length mismatch Metadata: original len=%d, restored len=%d; ",
-						len(userWithEmptyMap.Metadata), len(restored.Metadata))
-				}
-				if !notificationsEqual {
-					result.Details += fmt.Sprintf("Empty map length mismatch Notifications: original len=%d, restored len=%d; ",
-						len(userWithEmptyMap.Profile.Preferences.Notifications), len(restored.Profile.Preferences.Notifications))
-				}
-			}
-
 			if !result.StrictEmptyMapsOK {
 				if !metadataStrictEqual {
-					result.Details += fmt.Sprintf("Strict empty map type mismatch Metadata: original=%#v, restored=%#v; ",
+					result.Details += fmt.Sprintf("Empty map type mismatch Metadata: original=%#v, restored=%#v; ",
 						userWithEmptyMap.Metadata, restored.Metadata)
 				}
 				if !notificationsStrictEqual {
-					result.Details += fmt.Sprintf("Strict empty map type mismatch Notifications: original=%#v, restored=%#v; ",
+					result.Details += fmt.Sprintf("Empty map type mismatch Notifications: original=%#v, restored=%#v; ",
 						userWithEmptyMap.Profile.Preferences.Notifications, restored.Profile.Preferences.Notifications)
 				}
 			}
@@ -349,27 +308,18 @@ func (r *Runner) testSymmetry(ser serializers.Serializer) serializers.SymmetryRe
 		if err != nil {
 			result.Details += fmt.Sprintf("Nil map unmarshal error: %v; ", err)
 		} else {
-			// Functional nil handling test (nil or zero length)
-			result.NilMapsOK = (userWithNilMap.Metadata == nil && (restored.Metadata == nil || len(restored.Metadata) == 0)) &&
-				(userWithNilMap.Profile.Preferences.Notifications == nil && (restored.Profile.Preferences.Notifications == nil || len(restored.Profile.Preferences.Notifications) == 0))
-
 			// Strict nil preservation test (nil stays nil)
 			metadataStrictNil := userWithNilMap.Metadata == nil && restored.Metadata == nil
 			notificationsStrictNil := userWithNilMap.Profile.Preferences.Notifications == nil && restored.Profile.Preferences.Notifications == nil
 			result.StrictNilMapsOK = metadataStrictNil && notificationsStrictNil
 
-			if !result.NilMapsOK {
-				result.Details += fmt.Sprintf("Nil map handling: original=nil, restored=%v; ",
-					restored.Metadata)
-			}
-
 			if !result.StrictNilMapsOK {
 				if !metadataStrictNil {
-					result.Details += fmt.Sprintf("Strict nil map preservation Metadata: original=nil, restored=%#v; ",
+					result.Details += fmt.Sprintf("Nil map preservation Metadata: original=nil, restored=%#v; ",
 						restored.Metadata)
 				}
 				if !notificationsStrictNil {
-					result.Details += fmt.Sprintf("Strict nil map preservation Notifications: original=nil, restored=%#v; ",
+					result.Details += fmt.Sprintf("Nil map preservation Notifications: original=nil, restored=%#v; ",
 						restored.Profile.Preferences.Notifications)
 				}
 			}

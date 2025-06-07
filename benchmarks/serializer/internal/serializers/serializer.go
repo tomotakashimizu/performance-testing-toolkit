@@ -21,13 +21,9 @@ type SerializationResult struct {
 	UnmarshalMedianNs int64
 }
 
-// SymmetryResult contains the results of empty slice/map symmetry tests
+// SymmetryResult contains the results of strict type preservation tests
 type SymmetryResult struct {
 	SerializerName      string
-	EmptySlicesOK       bool // Functional equivalence (length = 0)
-	EmptyMapsOK         bool // Functional equivalence (length = 0)
-	NilSlicesOK         bool // Nil handling
-	NilMapsOK           bool // Nil handling
 	StrictEmptySlicesOK bool // Strict type preservation ([] stays [])
 	StrictEmptyMapsOK   bool // Strict type preservation ({} stays {})
 	StrictNilSlicesOK   bool // Strict nil preservation (nil stays nil)
