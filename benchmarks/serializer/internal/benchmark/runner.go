@@ -59,17 +59,16 @@ func (r *Runner) benchmarkSerializer(ser serializers.Serializer, iterations int)
 		UnmarshalTimes: make([]int64, iterations),
 	}
 
-	// Use first user for initial serialization to get data size
-	firstUser := r.users[0]
-	data, err := ser.Marshal(firstUser)
+	// Calculate data size for the entire users slice
+	data, err := ser.MarshalUsers(r.users)
 	if err != nil {
-		return result, fmt.Errorf("initial marshal failed: %w", err)
+		return result, fmt.Errorf("initial marshal failed for users slice: %w", err)
 	}
 	result.DataSize = len(data)
 
-	// Run iterations
+	// Run iterations - process entire users slice in each iteration
 	for i := 0; i < iterations; i++ {
-		marshalTime, unmarshalTime, err := r.measureSingleIteration(ser, firstUser)
+		marshalTime, unmarshalTime, err := r.measureUsersSlice(ser)
 		if err != nil {
 			return result, fmt.Errorf("iteration %d failed: %w", i+1, err)
 		}
@@ -86,22 +85,22 @@ func (r *Runner) benchmarkSerializer(ser serializers.Serializer, iterations int)
 	return result, nil
 }
 
-// measureSingleIteration measures marshal and unmarshal time for a single iteration
-func (r *Runner) measureSingleIteration(ser serializers.Serializer, user models.User) (marshalTime, unmarshalTime int64, err error) {
-	// Measure marshal time
+// measureUsersSlice measures marshal and unmarshal time for the entire users slice
+func (r *Runner) measureUsersSlice(ser serializers.Serializer) (marshalTime, unmarshalTime int64, err error) {
+	// Measure marshal time for entire users slice
 	start := time.Now()
-	data, err := ser.Marshal(user)
+	data, err := ser.MarshalUsers(r.users)
 	marshalTime = time.Since(start).Nanoseconds()
 	if err != nil {
-		return 0, 0, fmt.Errorf("marshal failed: %w", err)
+		return 0, 0, fmt.Errorf("marshal failed for users slice: %w", err)
 	}
 
-	// Measure unmarshal time
+	// Measure unmarshal time for entire users slice
 	start = time.Now()
-	_, err = ser.Unmarshal(data)
+	_, err = ser.UnmarshalUsers(data)
 	unmarshalTime = time.Since(start).Nanoseconds()
 	if err != nil {
-		return 0, 0, fmt.Errorf("unmarshal failed: %w", err)
+		return 0, 0, fmt.Errorf("unmarshal failed for users slice: %w", err)
 	}
 
 	return marshalTime, unmarshalTime, nil

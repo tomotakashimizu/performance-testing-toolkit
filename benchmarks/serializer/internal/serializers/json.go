@@ -30,3 +30,15 @@ func (j *JSONSerializer) Unmarshal(data []byte) (models.User, error) {
 	err := json.Unmarshal(data, &user)
 	return user, err
 }
+
+// MarshalUsers serializes a slice of Users to JSON bytes
+func (j *JSONSerializer) MarshalUsers(users []models.User) ([]byte, error) {
+	return json.Marshal(users)
+}
+
+// UnmarshalUsers deserializes JSON bytes to a slice of Users
+func (j *JSONSerializer) UnmarshalUsers(data []byte) ([]models.User, error) {
+	var users []models.User
+	err := json.Unmarshal(data, &users)
+	return users, err
+}

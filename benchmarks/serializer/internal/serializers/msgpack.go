@@ -29,3 +29,15 @@ func (m *MsgPackSerializer) Unmarshal(data []byte) (models.User, error) {
 	err := msgpack.Unmarshal(data, &user)
 	return user, err
 }
+
+// MarshalUsers serializes a slice of Users to MessagePack bytes
+func (m *MsgPackSerializer) MarshalUsers(users []models.User) ([]byte, error) {
+	return msgpack.Marshal(users)
+}
+
+// UnmarshalUsers deserializes MessagePack bytes to a slice of Users
+func (m *MsgPackSerializer) UnmarshalUsers(data []byte) ([]models.User, error) {
+	var users []models.User
+	err := msgpack.Unmarshal(data, &users)
+	return users, err
+}

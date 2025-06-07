@@ -29,3 +29,15 @@ func (c *CBORSerializer) Unmarshal(data []byte) (models.User, error) {
 	err := cbor.Unmarshal(data, &user)
 	return user, err
 }
+
+// MarshalUsers serializes a slice of Users to CBOR bytes
+func (c *CBORSerializer) MarshalUsers(users []models.User) ([]byte, error) {
+	return cbor.Marshal(users)
+}
+
+// UnmarshalUsers deserializes CBOR bytes to a slice of Users
+func (c *CBORSerializer) UnmarshalUsers(data []byte) ([]models.User, error) {
+	var users []models.User
+	err := cbor.Unmarshal(data, &users)
+	return users, err
+}

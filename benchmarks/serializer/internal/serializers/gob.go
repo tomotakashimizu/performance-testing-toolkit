@@ -39,3 +39,23 @@ func (g *GobSerializer) Unmarshal(data []byte) (models.User, error) {
 	err := dec.Decode(&user)
 	return user, err
 }
+
+// MarshalUsers serializes a slice of Users to Gob bytes
+func (g *GobSerializer) MarshalUsers(users []models.User) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(users)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+// UnmarshalUsers deserializes Gob bytes to a slice of Users
+func (g *GobSerializer) UnmarshalUsers(data []byte) ([]models.User, error) {
+	var users []models.User
+	buf := bytes.NewBuffer(data)
+	dec := gob.NewDecoder(buf)
+	err := dec.Decode(&users)
+	return users, err
+}

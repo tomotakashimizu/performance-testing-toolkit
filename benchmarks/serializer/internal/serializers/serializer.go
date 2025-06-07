@@ -7,6 +7,8 @@ type Serializer interface {
 	Name() string
 	Marshal(user models.User) ([]byte, error)
 	Unmarshal(data []byte) (models.User, error)
+	MarshalUsers(users []models.User) ([]byte, error)
+	UnmarshalUsers(data []byte) ([]models.User, error)
 }
 
 // SerializationResult contains the results of serialization benchmarks
